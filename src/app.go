@@ -2,6 +2,7 @@ package main
 
 import (
 	"app/src/controller"
+	"app/src/middleware"
 	"fmt"
 	"github.com/go-chi/chi"
 	"net/http"
@@ -49,7 +50,13 @@ func (app *AppService) CreateHttpServer() *AppService {
 
 func (app *AppService) CreateRoutes() *AppService {
 
-	app.Router.HandleFunc(indexRoute, controller.IndexController)
+	app.Router.Use(middleware.JwtToken)
+
+	app.Router.Get(indexRoute, controller.IndexController)
+
+	app.Router.Route(securityRoute, func(r chi.Router) {
+		r.HandleFunc(securityLoginRoute, controller.UserHandler)
+	})
 
 	return app
 }
