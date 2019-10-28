@@ -1,3 +1,4 @@
 .idea
 /etc/app.yml
-/bin
+/bin/*
+!bin/.gitkeep
