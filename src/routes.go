@@ -1,5 +1,6 @@
 package main
 
+/*
 const (
 	indexRoute string = "/"
 	loginRoute string = "/login"
@@ -9,3 +10,4 @@ const (
 
 	//secRoute map[string]string = sli
 )
+*/

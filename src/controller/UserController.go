@@ -2,6 +2,7 @@ package controller
 
 import (
 	"app/src/entity"
+	"app/src/repository"
 	"fmt"
 	uuid "github.com/satori/go.uuid"
 	"net/http"
@@ -29,4 +30,8 @@ func UserHandler(w http.ResponseWriter, r *http.Request)  {
 	fmt.Fprint(w, "datetime: " + currentTime.Format("01-02-2006 15:04:05"))*/
 
 	//return
+}
+
+func createUserAction(w http.ResponseWriter, r *http.Request, userRepository *repository.UserRepository)  {
+
 }

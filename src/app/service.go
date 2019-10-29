@@ -1,25 +1,35 @@
-package main
-/*
+package app
+
 import (
+	. "app/src/config"
+	"app/src/routes"
 	"app/src/controller"
 	"app/src/middleware"
 	"fmt"
 	"github.com/go-chi/chi"
+	"github.com/go-pg/pg"
 	"net/http"
 )
 
 type (
-	App interface {
+	Service interface {
 		Bootstrap(config *ConfigYaml) *AppService
+		CreateDbConnection() *AppService
 		CreateRoutes() *AppService
 		CreateHttpServer() *AppService
 		Process() error
 	}
 
+	GetConfigSection interface {
+		GetDbSection() *DbSection
+		GetHttpSection() *HttpSection
+	}
+
 	AppService struct {
-		App
+		Service
 		Config *ConfigYaml
 		Router *chi.Mux
+		Db *pg.DB
 		Server *http.Server
 	}
 )
@@ -27,8 +37,22 @@ type (
 func (app *AppService) Bootstrap (config *ConfigYaml) *AppService {
 	app.Config = config
 	app.Router = chi.NewRouter()
+	app.CreateDbConnection()
 	app.CreateHttpServer()
 	app.CreateRoutes()
+	return app
+}
+
+func (app *AppService) CreateDbConnection() *AppService {
+	var config = *app.Config.GetDb()
+	db := pg.Connect(&pg.Options{
+		Addr: config.GetHost(),
+		User: config.GetUser(),
+		Password: config.GetPassword(),
+		Database: config.GetBase(),
+	})
+	defer db.Close()
+	app.Db = db
 	return app
 }
 
@@ -50,13 +74,16 @@ func (app *AppService) CreateHttpServer() *AppService {
 
 func (app *AppService) CreateRoutes() *AppService {
 
+	routes.e
+
+	/*
 	app.Router.Use(middleware.JwtToken)
 
-	app.Router.Get(indexRoute, controller.IndexController)
+	app.Router.Get(routes., controller.IndexController)
 
 	app.Router.Route(securityRoute, func(r chi.Router) {
 		r.HandleFunc(securityLoginRoute, controller.UserHandler)
-	})
+	})*/
 
 	return app
-}*/
+}
