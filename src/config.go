@@ -1,5 +1,5 @@
 package main
-
+/*
 import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -85,4 +85,4 @@ func (config *HttpSection) GetHost () string {
 
 func (config *HttpSection) GetPort () int  {
 	return config.Port
-}
+}*/

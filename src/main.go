@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"github.com/go-pg/pg"
+	"app/src/app"
+	"app/src/config"
 	uuid "github.com/satori/go.uuid"
 	"log"
 	"os"
@@ -31,9 +31,13 @@ type User struct {
 
 func main()  {
 
+	/*
 	config := new(ConfigYaml)
-	config.load(appDirectory+configPath)
+	config.load(appDirectory+configPath)*/
 
+	config := new(config.ConfigYaml)
+	config.Load(appDirectory+configPath)
+	/*
 	db := pg.Connect(&pg.Options{
 		User: "postgres",
 		Password: "root",
@@ -49,10 +53,16 @@ func main()  {
 	err1 := db.Insert(user1)
 	if err1 != nil {
 		panic(err1)
-	}
+	}*/
+
+
+	appService := new(app.AppService)
+	appService.Bootstrap(config)
+	appService.Process()
 
 
 
+	/*
 
 	appService := new(AppService)
 	appService.Bootstrap(config)
@@ -60,5 +70,5 @@ func main()  {
 
 	if err != nil {
 		log.Fatal(fmt.Sprintf("Error when starting or running http server: %v", err))
-	}
+	}*/
 }

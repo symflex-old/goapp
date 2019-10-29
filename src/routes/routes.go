@@ -1,6 +1,11 @@
 package routes
 
-import "github.com/go-chi/chi"
+import (
+	"app/src/controller"
+	"github.com/go-chi/chi"
+	"github.com/go-pg/pg"
+	"net/http"
+)
 
 const (
 	indexRoute string = "/"
@@ -14,20 +19,10 @@ const (
 	//secRoute map[string]string = sli
 )
 
-type (
-	ExportMethods interface {
-		Export(router *chi.Mux) *chi.Mux
-	}
-
-	ExportRoutes struct {
-		ExportMethods
-	}
-)
-
-
-func (routes *ExportRoutes) exports(router *chi.Mux) *chi.Mux {
-
-	router.
+func Export(router *chi.Mux, db *pg.DB) *chi.Mux  {
+	router.Get(indexRoute, func(writer http.ResponseWriter, request *http.Request) {
+		controller.IndexAction(writer, request, db)
+	})
 
 	return router
 }

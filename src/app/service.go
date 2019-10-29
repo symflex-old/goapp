@@ -2,9 +2,7 @@ package app
 
 import (
 	. "app/src/config"
-	"app/src/routes"
 	"app/src/controller"
-	"app/src/middleware"
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-pg/pg"
@@ -12,6 +10,10 @@ import (
 )
 
 type (
+	GetDbMethod interface {
+		GetDb() *pg.DB
+	}
+
 	Service interface {
 		Bootstrap(config *ConfigYaml) *AppService
 		CreateDbConnection() *AppService
@@ -20,19 +22,19 @@ type (
 		Process() error
 	}
 
-	GetConfigSection interface {
-		GetDbSection() *DbSection
-		GetHttpSection() *HttpSection
-	}
-
 	AppService struct {
 		Service
+		GetDbMethod
 		Config *ConfigYaml
 		Router *chi.Mux
 		Db *pg.DB
 		Server *http.Server
 	}
 )
+
+func (app *AppService) GetDb() *pg.DB {
+	return app.Db
+}
 
 func (app *AppService) Bootstrap (config *ConfigYaml) *AppService {
 	app.Config = config
@@ -46,13 +48,15 @@ func (app *AppService) Bootstrap (config *ConfigYaml) *AppService {
 func (app *AppService) CreateDbConnection() *AppService {
 	var config = *app.Config.GetDb()
 	db := pg.Connect(&pg.Options{
-		Addr: config.GetHost(),
 		User: config.GetUser(),
 		Password: config.GetPassword(),
 		Database: config.GetBase(),
 	})
-	defer db.Close()
 	app.Db = db
+	return app
+}
+
+func (app *AppService) App() *AppService {
 	return app
 }
 
@@ -62,7 +66,7 @@ func (app *AppService) Process() error {
 
 func (app *AppService) CreateHttpServer() *AppService {
 
-	addr := fmt.Sprintf("%s:%d", app.Config.GetHost(), app.Config.GetPort())
+	addr := fmt.Sprintf("%s:%d", app.Config.GetHttp().GetHost(), app.Config.GetHttp().GetPort())
 
 	app.Server = &http.Server{
 		Addr:    addr,
@@ -74,7 +78,9 @@ func (app *AppService) CreateHttpServer() *AppService {
 
 func (app *AppService) CreateRoutes() *AppService {
 
-	routes.e
+	//routes.Export(app.Router, app.Db)
+
+	app.Router.Get("/test", controller.IndexControllerFactory(app.Db))
 
 	/*
 	app.Router.Use(middleware.JwtToken)

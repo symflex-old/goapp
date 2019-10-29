@@ -20,3 +20,9 @@ func (repository *UserRepository) GetUser (id uuid.UUID) *entity.User {
 	repository.Db.Model(user).First()
 	return &user
 }
+
+func (repository *UserRepository) GetUsers() []entity.User {
+	var users []entity.User
+	repository.Db.Model(&users).Select()
+	return users
+}

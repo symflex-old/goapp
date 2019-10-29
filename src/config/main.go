@@ -23,13 +23,13 @@ type (
 		ConfigMethod
 		ConfigYamlMethod
 		Debug bool `yml: "debug"`
-		Http HttpSection `yml: "http"`
-		Db DbSection `yml: "db"`
+		Http *HttpSection `yml: "http"`
+		Db *DbSection `yml: "db"`
 	}
 )
 
 // Load config file
-func (config *ConfigYaml) load(file string)  {
+func (config *ConfigYaml) Load(file string)  {
 	filename, _ := filepath.Abs(file)
 	data, err := ioutil.ReadFile(filename)
 
@@ -50,11 +50,11 @@ func (config *ConfigYaml) parse(data []byte) error {
 }
 
 func (config *ConfigYaml) GetHttp() *HttpSection {
-	return  &config.Http
+	return  config.Http
 }
 
 func (config *ConfigYaml) GetDb() *DbSection {
-	return &config.Db
+	return config.Db
 }
 
 func (config *ConfigYaml) IsDebug() bool {
